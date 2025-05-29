@@ -1,7 +1,7 @@
 package priorityqueue_test
 
 import (
-	priorityqueue "eventbus/pkg/priority_queue"
+	priorityqueue "eventarch/pkg/priority_queue"
 	"testing"
 	"time"
 )

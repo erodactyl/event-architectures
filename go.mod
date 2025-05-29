@@ -1,4 +1,4 @@
-module eventbus
+module eventarch
 
 go 1.24.0
 

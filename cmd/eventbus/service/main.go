@@ -1,7 +1,7 @@
 package main
 
 import (
-	"eventbus/pkg/eventbus"
+	"eventarch/pkg/eventbus"
 	"log"
 	"net"
 	"net/http"

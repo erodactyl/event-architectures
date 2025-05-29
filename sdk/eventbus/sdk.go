@@ -1,7 +1,7 @@
 package sdk
 
 import (
-	"eventbus/pkg/eventbus"
+	"eventarch/pkg/eventbus"
 	"log"
 	"net/rpc"
 )

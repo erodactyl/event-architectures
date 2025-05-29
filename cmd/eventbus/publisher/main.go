@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	sdk "eventbus/sdk/eventbus"
+	sdk "eventarch/sdk/eventbus"
 	"time"
 )
 

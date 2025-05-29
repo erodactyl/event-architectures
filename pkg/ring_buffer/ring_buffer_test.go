@@ -1,7 +1,7 @@
 package ringbuffer_test
 
 import (
-	ringbuffer "eventbus/pkg/ring_buffer"
+	ringbuffer "eventarch/pkg/ring_buffer"
 	"sync"
 	"testing"
 )

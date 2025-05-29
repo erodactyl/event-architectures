@@ -1,7 +1,7 @@
 package main
 
 import (
-	sdk "eventbus/sdk/eventbus"
+	sdk "eventarch/sdk/eventbus"
 	"fmt"
 	"io"
 	"log"
