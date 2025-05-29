@@ -13,7 +13,7 @@ type queue[T any] interface {
 	Size() int
 }
 
-type event struct {
+type Event struct {
 	QueueName string
 	EventType string
 	Body      []byte
@@ -21,17 +21,24 @@ type event struct {
 
 type EventQueue struct {
 	Name  string
-	queue queue[*event]
+	queue queue[*Event]
 }
 
 func NewEventQueue(name string) *EventQueue {
-	rb := ringbuffer.NewRingBuffer[*event](10)
+	rb := ringbuffer.NewRingBuffer[*Event](10)
 	return &EventQueue{Name: name, queue: rb}
 }
 
 type EventQueueService struct {
 	queues map[string]EventQueue
 	mu     sync.RWMutex
+}
+
+func NewEventQueueService() *EventQueueService {
+	return &EventQueueService{
+		queues: map[string]EventQueue{},
+		mu:     sync.RWMutex{},
+	}
 }
 
 type CreateQueueArgs struct {
@@ -54,7 +61,7 @@ func (e *EventQueueService) CreateQueue(args *CreateQueueArgs, reply *bool) erro
 	return nil
 }
 
-type PutArgs = event
+type PutArgs = Event
 
 func (e *EventQueueService) Put(args *PutArgs, reply *bool) error {
 	e.mu.RLock()
@@ -72,9 +79,27 @@ func (e *EventQueueService) Put(args *PutArgs, reply *bool) error {
 }
 
 type PullArgs struct {
-	Limit int
+	QueueName string
+	Limit     int
 }
 
-func (e *EventQueueService) Pull(args *PullArgs, reply *bool) {
+func (e *EventQueueService) Pull(args *PullArgs, reply *[]*Event) error {
+	e.mu.RLock()
+	eq, exists := e.queues[args.QueueName]
+	if !exists {
+		return errors.New(fmt.Sprintf("Queue with name %s does not exist", args.QueueName))
+	}
+	e.mu.RUnlock()
 
+	*reply = []*Event{}
+
+	for range args.Limit {
+		event, exists := eq.queue.Dequeue()
+		if !exists {
+			break
+		}
+		*reply = append(*reply, event)
+	}
+
+	return nil
 }
